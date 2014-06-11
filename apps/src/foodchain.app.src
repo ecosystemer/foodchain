@@ -8,5 +8,23 @@
                   stdlib
                  ]},
   {mod, { foodchain_app, []}},
-  {env, []}
+  {env, [
+  	% 地图相关
+  	{map_maxlat, 100},
+  	{map_maxlong, 100},
+  	{map_maxalt, 100}
+
+  	// wolf相关
+  	{wolf_maxage, 100},
+
+  	// sheep相关
+  	{sheep_maxage, 100},
+
+  	// grass相关
+  	{grass_maxage, 100},
+
+
+    // 表名
+    {tab_}
+  ]}
  ]}.

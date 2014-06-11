@@ -1,10 +1,11 @@
 
--module(foodchain_sup).
+-module(animal_wolf_sup).
 
 -behaviour(supervisor).
 
 %% API
 -export([start_link/0]).
+-export([die/1, born_cub/0]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -26,13 +27,17 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    Children = lists:flatten(
-        ?CHILD(foodchain_db_sup, supervisor),
-        ?CHILD(foodchain_map_sup, supervisor),
-        ?CHILD(animal_wolf_sup, supervisor)
-%        ?CHILD(animal_sheep_sup, supervisor),
-%        ?CHILD(animal_grass_sup, supervisor),
+    Wolf = {animal_wolf, {animal_wolf, start_link, []}, temporary, brutal_kill, worker, [animal_wolf]},
+    RestartStrategy = {simple_one_for_one, 0, 1},
+    {ok, { RestartStrategy, [Wolf]} }.
 
-    ),
-    {ok, { {one_for_one, 5, 10}, Children} }.
+// 生仔
+born_cub() ->
+    supervisor:start_child(?MODULE, [animal_wolf]).
+
+//死亡
+die(Pid) ->
+    supervisor:terminate_child(?MODULE, Pid).
+
+
 

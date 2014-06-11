@@ -1,13 +1,13 @@
-
--module(foodchain_sup).
+-module(foodchain_db_sup).
 
 -behaviour(supervisor).
 
-%% API
+%%api
 -export([start_link/0]).
 
-%% Supervisor callbacks
+%call back
 -export([init/1]).
+
 
 %% Helper macro for declaring children of supervisor
 -define(CHILD(I, Type, Timeout, Args), {I, {I, start_link, Args}, permanent, Timeout, Type, [I]}).
@@ -18,21 +18,14 @@
 %% API functions
 %% ===================================================================
 
+
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-%% ===================================================================
-%% Supervisor callbacks
-%% ===================================================================
 
 init([]) ->
-    Children = lists:flatten(
-        ?CHILD(foodchain_db_sup, supervisor),
-        ?CHILD(foodchain_map_sup, supervisor),
-        ?CHILD(animal_wolf_sup, supervisor)
-%        ?CHILD(animal_sheep_sup, supervisor),
-%        ?CHILD(animal_grass_sup, supervisor),
+    app_helper:get_env(foodchain, tab_map),
+    erl_utils_ets:new().
 
-    ),
-    {ok, { {one_for_one, 5, 10}, Children} }.
+
 

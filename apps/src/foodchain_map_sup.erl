@@ -1,9 +1,8 @@
-
--module(foodchain_sup).
+-module(foodchain_map_sup).
 
 -behaviour(supervisor).
 
-%% API
+%% api
 -export([start_link/0]).
 
 %% Supervisor callbacks
@@ -26,13 +25,10 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    Children = lists:flatten(
-        ?CHILD(foodchain_db_sup, supervisor),
-        ?CHILD(foodchain_map_sup, supervisor),
-        ?CHILD(animal_wolf_sup, supervisor)
-%        ?CHILD(animal_sheep_sup, supervisor),
-%        ?CHILD(animal_grass_sup, supervisor),
+    Map = ?CHILD(foodchain_map, work),
+    RestartStrategy = {one_for_one, 0, 1},
+    {ok, { RestartStrategy, [Wolf]} }.
 
-    ),
-    {ok, { {one_for_one, 5, 10}, Children} }.
+
+
 
