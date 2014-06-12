@@ -1,13 +1,11 @@
--module(foodchain_db_sup).
-
+-module(foodchain_mainline_sup).
 -behaviour(supervisor).
 
-%%api
+%% api
 -export([start_link/0]).
 
-%call back
+%% call back
 -export([init/1]).
-
 
 %% Helper macro for declaring children of supervisor
 -define(CHILD(I, Type, Timeout, Args), {I, {I, start_link, Args}, permanent, Timeout, Type, [I]}).
@@ -17,18 +15,16 @@
 %% ===================================================================
 %% API functions
 %% ===================================================================
-
-
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-
+%% ===================================================================
+%% Supervisor callbacks
+%% ===================================================================
 init([]) ->
-    app_helper:get_env(foodchain, tab_map),
-    erlutils_ets:new(foodchain, []),
-    Child = ?CHILD(foodchain_db, worker),
-    {ok, { {one_for_one, 5, 10}, [Child]} }.
-
+    MainLine = ?CHILD(mainline, worker),
+    RestartStrategy = {one_for_one, 0, 1},
+    {ok, { RestartStrategy, [MainLine]} }.
 
 
 

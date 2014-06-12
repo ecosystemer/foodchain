@@ -9,9 +9,9 @@
 -export([init/1]).
 
 %% Helper macro for declaring children of supervisor
--define(CHILD(I, Type, Timeout, Args), {I, {I, start_link, Args}, permanent, Timeout, Type, [I]}).
--define(CHILD(I, Type, Timeout), ?CHILD(I, Type, Timeout, [])).
--define(CHILD(I, Type), ?CHILD(I, Type, 5000)).
+-define(CHILD(Id, Mod, Type, Timeout, Args), {Id, {Mod, start_link, Args}, permanent, Timeout, Type, [Mod]}).
+
+
 
 %% ===================================================================
 %% API functions
@@ -25,9 +25,17 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    Map = ?CHILD(foodchain_map, work),
+    MaxLat = app_helper:get_env(foodchain, map_maxlat),
+    MaxLong = app_helper:get_env(foodchain, map_maxlong),
+    Lats = lists:seq(1, MaxLat),
+    Longs = lists:seq(1, MaxLong),
+    Maps = ["map_" ++ list_to_atom(integer_to_list(Long) ++ "x" ++ integer_to_list(Lat)) || Lat <- Lats, Long <- Longs],
+
+    Childs = lists:map(fun(X) -> ?CHILD(X, foodchain_map, worker, 5000, [X]) end, Maps),
+    io:format("~p~n", [Childs]),
+
     RestartStrategy = {one_for_one, 0, 1},
-    {ok, { RestartStrategy, [Wolf]} }.
+    {ok, { RestartStrategy, Childs} }.
 
 
 

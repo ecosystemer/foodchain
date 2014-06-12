@@ -31,11 +31,11 @@ init([]) ->
     RestartStrategy = {simple_one_for_one, 0, 1},
     {ok, { RestartStrategy, [Wolf]} }.
 
-// 生仔
+%% 生仔
 born_cub() ->
     supervisor:start_child(?MODULE, [animal_wolf]).
 
-//死亡
+%% 死亡
 die(Pid) ->
     supervisor:terminate_child(?MODULE, Pid).
 

@@ -4,5 +4,14 @@
               {registered,[]},
               {applications,[kernel,stdlib]},
               {mod,{foodchain_app,[]}},
-              {env,[]},
-              {modules,[foodchain_app,foodchain_sup]}]}.
+              {env,[{map_maxlat,2},
+                    {map_maxlong,2},
+                    {map_maxalt,100},
+                    {wolf_maxage,100},
+                    {sheep_maxage,100},
+                    {grass_maxage,100}]},
+              {modules,[animal_wolf,animal_wolf_sup,app_helper,erlutils_ets,
+                        erlutils_random,fc_utils_ets,foodchain,foodchain_app,
+                        foodchain_db,foodchain_db_sup,foodchain_mainline_sup,
+                        foodchain_map,foodchain_map_sup,foodchain_sup,
+                        reloader]}]}.

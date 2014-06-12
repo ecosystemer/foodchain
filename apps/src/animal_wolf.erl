@@ -14,9 +14,9 @@
                 altitude,  % 高度(暂不用)
                 other
                }).
-define(MAXLAT, 100).
-define(MAXLONG, 100).
-define(MAXAGE, 100).
+-define(MAXLAT, 100).
+-define(MAXLONG, 100).
+-define(MAXAGE, 100).
 
 
 start_link()->
@@ -25,8 +25,12 @@ start_link()->
     Long = util_random:get(MaxLong),
     Lat = util_random:get(MaxLat),
     gen_server:cast(foodchain_map, {add, {wolf, Long, Lat}, self()}),
-    State = #state{0, 0, Long, Lat, 0, 0},
+    State = {state, 0, 0, Long, Lat, 0, 0},
     gen_server:start_link(?MODULE, State, []).
+
+stop() ->
+    %% todo
+    ok.
 
 init(State) ->
     {ok, State}.  
@@ -50,7 +54,7 @@ handle_cast(add_age, State) ->
 handle_cast(_Msg, State) ->  
     {noreply, State}.  
 
-handle_info(Info, State) ->  
+handle_info(_Info, State) ->  
     {noreply, State}.  
 
 terminate(_Reason, _State) ->  

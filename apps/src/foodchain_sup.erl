@@ -26,13 +26,15 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    Children = lists:flatten(
+    Children = lists:flatten([
         ?CHILD(foodchain_db_sup, supervisor),
         ?CHILD(foodchain_map_sup, supervisor),
-        ?CHILD(animal_wolf_sup, supervisor)
+        ?CHILD(animal_wolf_sup, supervisor),
 %        ?CHILD(animal_sheep_sup, supervisor),
 %        ?CHILD(animal_grass_sup, supervisor),
+        ?CHILD(foodchain_mainline_sup, supervisor)
 
-    ),
+    ]),
+%    io:format("~p~n", [Children]),
     {ok, { {one_for_one, 5, 10}, Children} }.
 
