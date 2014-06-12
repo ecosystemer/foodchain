@@ -1,7 +1,7 @@
 {application, foodchain,
  [
   {description, ""},
-  {vsn, "1"},
+  {vsn, "0.0.1"},
   {registered, []},
   {applications, [
                   kernel,
@@ -10,12 +10,13 @@
   {mod, { foodchain_app, []}},
   {env, [
   	% 地图相关
-  	{map_maxlat, 2},
-  	{map_maxlong, 2},
+  	{map_maxlat, 20},
+  	{map_maxlong, 20},
   	{map_maxalt, 100},
 
   	%% wolf相关
-  	{wolf_maxage, 100},
+  	{wolf_maxage, 100},  % 最大存活年龄
+    {wolf_initnum, 2},   % 初使狼的个数
 
   	%% sheep相关
   	{sheep_maxage, 100},

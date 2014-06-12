@@ -1,8 +1,7 @@
--module(animal_wolf).
+-module(animal_grass).
 -behaviour(gen_server).
 
-
--export([start_link/1, stop/0]).
+-export([start_link/0, stop/0]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,  
          terminate/2, code_change/3]).  
@@ -19,21 +18,20 @@
 -define(MAXAGE, 100).
 
 
-start_link(Wolf)->
-    io:format("~p~n", [Wolf]),
-    gen_server:start_link(?MODULE, [], []).  % no register
+start_link()->
+    MaxLat = app_helper:get_env(foodchain, map_maxlat, ?MAXLAT),
+    MaxLong = app_helper:get_env(foodchain, map_maxlong, ?MAXLONG),
+    Long = util_random:get(MaxLong),
+    Lat = util_random:get(MaxLat),
+    gen_server:cast(foodchain_map, {add, {wolf, Long, Lat}, self()}),
+    State = {state, 0, 0, Long, Lat, 0, 0},
+    gen_server:start_link(?MODULE, State, []).
 
 stop() ->
     %% todo
     ok.
 
-init([]) ->
-    MaxLat = app_helper:get_env(foodchain, map_maxlat, ?MAXLAT),
-    MaxLong = app_helper:get_env(foodchain, map_maxlong, ?MAXLONG),
-    Long = erlutils_random:get(MaxLong),
-    Lat = erlutils_random:get(MaxLat),
-%    gen_server:cast(foodchain_map, {add, {wolf, Long, Lat}, self()}),
-    State = {state, 0, 0, Long, Lat, 0, 0},
+init(State) ->
     {ok, State}.  
 
 handle_call(_Request, _From, State) ->  

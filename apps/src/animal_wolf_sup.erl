@@ -1,4 +1,3 @@
-
 -module(animal_wolf_sup).
 
 -behaviour(supervisor).
@@ -14,6 +13,8 @@
 -define(CHILD(I, Type, Timeout, Args), {I, {I, start_link, Args}, permanent, Timeout, Type, [I]}).
 -define(CHILD(I, Type, Timeout), ?CHILD(I, Type, Timeout, [])).
 -define(CHILD(I, Type), ?CHILD(I, Type, 5000)).
+
+
 
 %% ===================================================================
 %% API functions
@@ -38,6 +39,7 @@ born_cub() ->
 %% 死亡
 die(Pid) ->
     supervisor:terminate_child(?MODULE, Pid).
+
 
 
 

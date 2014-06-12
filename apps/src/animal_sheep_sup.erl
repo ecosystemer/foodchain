@@ -1,10 +1,12 @@
--module(foodchain_mainline_sup).
+-module(animal_sheep_sup).
+
 -behaviour(supervisor).
 
-%% api
+%% API
 -export([start_link/0]).
+-export([die/1, born_cub/0]).
 
-%% call back
+%% Supervisor callbacks
 -export([init/1]).
 
 %% Helper macro for declaring children of supervisor
@@ -15,17 +17,26 @@
 %% ===================================================================
 %% API functions
 %% ===================================================================
+
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 %% ===================================================================
 %% Supervisor callbacks
 %% ===================================================================
+
 init([]) ->
-    MainLine = ?CHILD(foodchain_mainline, worker),
-    Animal = ?CHILD(foodchain_animal, worker),
-    RestartStrategy = {one_for_one, 0, 1},
-    {ok, { RestartStrategy, [MainLine, Animal]} }.
+    Wolf = {animal_wolf, {animal_wolf, start_link, []}, temporary, brutal_kill, worker, [animal_wolf]},
+    RestartStrategy = {simple_one_for_one, 0, 1},
+    {ok, { RestartStrategy, [Wolf]} }.
+
+%% 生仔
+born_cub() ->
+    supervisor:start_child(?MODULE, [animal_wolf]).
+
+%% 死亡
+die(Pid) ->
+    supervisor:terminate_child(?MODULE, Pid).
 
 
 

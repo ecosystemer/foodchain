@@ -30,8 +30,8 @@ init([]) ->
         ?CHILD(foodchain_db_sup, supervisor),
         ?CHILD(foodchain_map_sup, supervisor),
         ?CHILD(animal_wolf_sup, supervisor),
-%        ?CHILD(animal_sheep_sup, supervisor),
-%        ?CHILD(animal_grass_sup, supervisor),
+        ?CHILD(animal_sheep_sup, supervisor),
+        ?CHILD(animal_grass_sup, supervisor),
         ?CHILD(foodchain_mainline_sup, supervisor)
 
     ]),
