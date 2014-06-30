@@ -10,16 +10,17 @@
   {mod, { foodchain_app, []}},
   {env, [
   	% 地图相关
-  	{map_maxlat, 20},
   	{map_maxlong, 20},
+    {map_maxlat, 20},
   	{map_maxalt, 100},
 
   	%% wolf相关
   	{wolf_maxage, 100},  % 最大存活年龄
-    {wolf_initnum, 2},   % 初使狼的个数
+    {wolf_initnum, 20},   % 初使狼的个数
 
   	%% sheep相关
   	{sheep_maxage, 100},
+    {sheep_initnum, 20},  % 初使羊的个数
 
   	%% grass相关
   	{grass_maxage, 100}

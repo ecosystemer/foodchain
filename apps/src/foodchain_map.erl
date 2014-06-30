@@ -9,7 +9,10 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--record(state, {}).
+-record(state, {
+          animals,    % 在此区域的动物的列表: e.x. [wolf1, sheep2]
+          other
+         }).
 
 
 
@@ -23,17 +26,22 @@ stop() ->
 %% worker callbacks
 %% ===================================================================
 init([]) ->
-    State = #state{},
+    State = #state{
+      animals = []
+     },
     {ok, State}.
 
-
+handle_call(state, _From, State) ->   % 查询进程状态
+    Reply = State,
+    {reply, Reply, State};
 handle_call(_, _From, State) ->
     {reply, ok, State}.
 
-handle_cast({add, {wolf, Long, Lat}, Pid}, State) ->
-    % @todo
-    fc_utils_ets:add_animal(wolf, {Long, Lat}, Pid),
-    {noreply, State};
+handle_cast({add, {Animal, Pid}}, State) ->  % Animal: wolf, sheep, grass
+    Animals = State#state.animals,
+    {noreply, State#state{
+                animals = [{Animal, Pid} | Animals]
+               }};
 handle_cast(_, State) ->
     {noreply, State}.
 

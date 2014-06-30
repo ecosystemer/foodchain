@@ -29,7 +29,7 @@ init([]) ->
     MaxLong = app_helper:get_env(foodchain, map_maxlong),
     Lats = lists:seq(1, MaxLat),
     Longs = lists:seq(1, MaxLong),
-    Maps = [list_to_atom("map_" ++ integer_to_list(Long) ++ "x" ++ integer_to_list(Lat)) || Lat <- Lats, Long <- Longs],
+    Maps = [fcutils_map:getName(Long, Lat) || Lat <- Lats, Long <- Longs],
 
     Childs = lists:map(fun(X) -> ?CHILD(X, foodchain_map, worker, 5000, [X]) end, Maps),
     io:format("~p~n", [Childs]),

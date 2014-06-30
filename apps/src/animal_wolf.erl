@@ -32,10 +32,21 @@ init([]) ->
     MaxLong = app_helper:get_env(foodchain, map_maxlong, ?MAXLONG),
     Long = erlutils_random:get(MaxLong),
     Lat = erlutils_random:get(MaxLat),
-%    gen_server:cast(foodchain_map, {add, {wolf, Long, Lat}, self()}),
-    State = {state, 0, 0, Long, Lat, 0, 0},
-    {ok, State}.  
+    Map = fcutils_map:getName(Long, Lat),
+    gen_server:cast(Map, {add, {wolf, self()}}),
+    State = #state{
+      age = 0, 
+      hungry = 0,
+      longitude = Long,
+      latitude = Lat,
+      altitude = 0,
+      other = 0
+     },
+    {ok, State}.
 
+handle_call(state, _From, State) ->
+    Reply = State,
+    {reply, Reply, State};
 handle_call(_Request, _From, State) ->  
     Reply = ok,  
     {reply, Reply, State}.  

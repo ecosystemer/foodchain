@@ -28,9 +28,13 @@ stop() ->
     ok.
 
 init(State) ->
+    initWolf(),
+    initSheep(),
+    {ok, State}.  
+
+initWolf() ->
     MaxWolf = app_helper:get_env(foodchain, wolf_initnum),
     Wolfs = lists:seq(1, MaxWolf),
-%    Wolfs = [ "wolf_" ++ integer_to_list(Num) || Num <- lists:seq(1, MaxWolf)],
     io:format("~p~n", [Wolfs]),
     Rtn = lists:map(
             fun(Wolf) -> 
@@ -38,8 +42,20 @@ init(State) ->
             end, Wolfs
     ),
     io:format("~p~n", [Rtn]),
+    ok.
+
+initSheep() ->
+    MaxSheep = app_helper:get_env(foodchain, sheep_initnum),
+    Sheeps = lists:seq(1, MaxSheep),
     
-    {ok, State}.  
+    Rtn = lists:map(
+            fun(Sheep) ->
+                    supervisor:start_child(animal_sheep_sup, [Sheep])
+            end, Sheeps
+     ),
+    io:format("~p~n", [Rtn]),
+    ok.
+
 
 handle_call(_Request, _From, State) ->  
     Reply = ok,  

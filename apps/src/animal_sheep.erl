@@ -18,22 +18,34 @@
 -define(MAXAGE, 100).
 
 
-start_link()->
-    MaxLat = app_helper:get_env(foodchain, map_maxlat, ?MAXLAT),
-    MaxLong = app_helper:get_env(foodchain, map_maxlong, ?MAXLONG),
-    Long = util_random:get(MaxLong),
-    Lat = util_random:get(MaxLat),
-    gen_server:cast(foodchain_map, {add, {wolf, Long, Lat}, self()}),
-    State = {state, 0, 0, Long, Lat, 0, 0},
-    gen_server:start_link(?MODULE, State, []).
+start_link(_Sheep)->
+%    io:format("~p~n", [Sheep]),
+    gen_server:start_link(?MODULE, [], []).  % no register
 
 stop() ->
     %% todo
     ok.
 
 init(State) ->
-    {ok, State}.  
+    MaxLat = app_helper:get_env(foodchain, map_maxlat, ?MAXLAT),
+    MaxLong = app_helper:get_env(foodchain, map_maxlong, ?MAXLONG),
+    Long = erlutils_random:get(MaxLong),
+    Lat = erlutils_random:get(MaxLat),
+    Map = fcutils_map:getName(Long, Lat),
+    gen_server:cast(Map, {add, {sheep, self()}}),
+    State = #state{
+      age = 0, 
+      hungry = 0,
+      longitude = Long,
+      latitude = Lat,
+      altitude = 0,
+      other = 0
+     },
+    {ok, State}.
 
+handle_call(state, _From, State) ->
+    Reply = State,
+    {reply, Reply, State};
 handle_call(_Request, _From, State) ->  
     Reply = ok,  
     {reply, Reply, State}.  
