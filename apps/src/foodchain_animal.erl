@@ -30,7 +30,7 @@ stop() ->
 init(State) ->
     initWolf(),
     initSheep(),
-    {ok, State}.  
+    {ok, State}.
 
 initWolf() ->
     MaxWolf = app_helper:get_env(foodchain, wolf_initnum),

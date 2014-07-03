@@ -13,12 +13,16 @@
 
 -record(state, {}).
 
+-define(TIMER_INTERVAL, 2).%%循环间隔的秒数
+
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
-    %% 启动狼群
+    %% 主进程控制
+    {ok, TRef} = timer:send_interval(timer:seconds(?TIMER_INTERVAL), do_the_staff),
+
     State = #state{},
     {ok, State}.
 
@@ -36,3 +40,25 @@ terminate(_Reason, _State)->
 
 code_change(_Old, State, _Extra) ->
     {ok, State}.
+
+
+
+%%%
+%%% 1. 判断前一行动是否已经做完
+%%% 2. 开始下一行动
+%%%
+do_the_staff() ->
+    if last_work_finished() ->
+            do_next_work();
+       true ->
+            fcutils_common:sleep(1)
+    end.
+
+% 判断前一行动是否已经做完
+last_work_finished() ->
+    true.
+
+% 通知进行下一步工作
+do_next_work() ->
+    % todo
+    
