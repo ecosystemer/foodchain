@@ -60,7 +60,11 @@ initSheep() ->
 handle_call(_Request, _From, State) ->  
     Reply = ok,  
     {reply, Reply, State}.  
-
+%do the next action
+handle_cast(next, State) ->
+    % tell all animals on each maps to do the next action
+    
+    {noreply, State};
 handle_cast(_Msg, State) ->  
     {noreply, State}.  
 

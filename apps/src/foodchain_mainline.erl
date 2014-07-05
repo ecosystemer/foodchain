@@ -11,7 +11,10 @@
 %% Helper macro for declaring children of supervisor
 -define(CHILD(Id, Mod, Type, Timeout, Args), {Id, {Mod, start_link, Args}, permanent, Timeout, Type, [Mod]}).
 
--record(state, {}).
+-record(state, {
+          isready, % 是否准备下次行动
+          times    % 第几次行动
+}).
 
 -define(TIMER_INTERVAL, 2).%%循环间隔的秒数
 
@@ -23,9 +26,17 @@ init([]) ->
     %% 主进程控制
     {ok, TRef} = timer:send_interval(timer:seconds(?TIMER_INTERVAL), do_the_staff),
 
-    State = #state{},
+    State = #state{
+      isready = false,
+      times = 0
+    },
     {ok, State}.
 
+
+
+handle_call(last_work_finished, _From, State) ->
+    Reply = State#state.isready,
+    {reply, Reply, State}.
 handle_call(_Msg, _From, State) ->
     {reply, ok, State}.
 
@@ -47,7 +58,7 @@ code_change(_Old, State, _Extra) ->
 %%% 1. 判断前一行动是否已经做完
 %%% 2. 开始下一行动
 %%%
-do_the_staff() ->
+do_the_staff(State) ->
     if last_work_finished() ->
             do_next_work();
        true ->
@@ -55,10 +66,13 @@ do_the_staff() ->
     end.
 
 % 判断前一行动是否已经做完
-last_work_finished() ->
-    true.
+last_work_finished(State) ->
+    Reply = gen_server:call(?MODULE, last_work_finished),
+    Reply.
 
 % 通知进行下一步工作
 do_next_work() ->
     % todo
-    
+    gen_server:cast(foodchain_animal, next}.
+
+
